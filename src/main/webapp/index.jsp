@@ -85,8 +85,6 @@
                 <input type="hidden" name="_method" value="put"/>
                 <input type="submit" value="提交rest_put请求"/>
             </form>
-
-
             <form method="post" action="/demo/handle/15">
                 <input type="hidden" name="_method" value="delete"/>
                 <input type="submit" value="提交rest_delete请求"/>

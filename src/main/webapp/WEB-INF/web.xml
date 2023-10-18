@@ -4,4 +4,59 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+
+<!--    SpringMVC 提供的针对post请求的编码过滤器-->
+    <filter>
+        <filter-name>encoding</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+<!--    配置SpringMVC请求方式转换过滤器 会检查请求参数中是否有_method参数，如果有就按照指定的请求方式进行转换-->
+    <filter>
+        <filter-name>hiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+
+
+    <filter-mapping>
+        <filter-name>encoding</filter-name>
+        <url-pattern>/**</url-pattern>
+    </filter-mapping>
+    
+
+    <filter-mapping>
+        <filter-name>hiddenHttpMethodFilter</filter-name>
+        <url-pattern>/**</url-pattern>
+    </filter-mapping>
+    
+  <servlet>
+    <servlet-name>springmvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+      <init-param>
+          <param-name>contextConfigLocation</param-name>
+          <param-value>classpath:springmvc.xml</param-value>
+      </init-param>
+  </servlet>
+
+  <servlet-mapping>
+<!--
+        方式一：带后缀 *.aaa  *.do *.action 精确
+        方式二： / rest风格 不会拦截jsp
+        但是会拦截.html等静态资源（除了servlet和jsp之外的js css png等）
+        为什么？==》因为：tomcat容器中还有一个web.xml（父），你的项目中也有一个web.xml（子）是继承关系
+        父web.xml中有defaultServlet，url-pattern 是一个 /
+        此时我们自己的web.xml中也配置了一个 / ，覆写了父web.xml的配置。也就是请求匹配了会进入子web.xml中，没有进入父web.xml中
+       为什么不拦截.jsp呢？
+        因为在父web.xml中有个jspServlet，这个servlet拦截.jsp 我们没有覆写这个配置 所以springmvc此时不拦截jsp，jsp的处理交给tomcat
+
+       如何解决拦截 静态资源？
+        方式三： /* 拦截所有 包括jsp
+-->
+<!--      拦截匹配规则的url请求，进入Springmvc框架处理-->
+    <servlet-name>springmvc</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
 </web-app>
