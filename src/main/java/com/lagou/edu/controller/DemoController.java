@@ -8,6 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +59,7 @@ public class DemoController {
      * http://localhost:8080/demo/handle01
      */
     @RequestMapping("/handle01")
-    public ModelAndView handle01(){
+    public ModelAndView handle01(@ModelAttribute("name") String name){
 
         int c = 1/0;
         Date date = new Date();
@@ -185,6 +186,25 @@ public class DemoController {
 
         uploadFile.transferTo(new File(folder,newName));
         return "success";
+    }
+
+
+    /**SpringMVC 重定向时参数传递的问题
+     * 转发:A 找 B 借钱400，B没有钱但是悄悄的找到C借了400块钱给Au，rl不会变
+     *      参数也不会丢失,一个请求
+     * 重定向:A 找 B 借钱400，B 说我没有钱，你找别人借去，那么A 又带着400块的借钱需求找到C
+     *       url会变,参数会丢失需要重新携带参数,两个请求
+     */
+
+    @RequestMapping("handleRedirect")
+    public String handleRedirect(String name, RedirectAttributes redirectAttributes){
+
+//        return "redirect:handle01?name="+name;
+
+        //addFlashAttributeaddFlashAttribute方法设置了一个flash类型属性，该属性会被暂存到session中，在 跳转到⻚面之后该属性销毁
+        redirectAttributes.addFlashAttribute("name",name);
+        return "redirect:handle01";
+
     }
 
 
